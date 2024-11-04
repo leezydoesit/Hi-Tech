@@ -1,0 +1,13 @@
+.idea/*
+venv/*
+.gradle/
+.DS_Store
+__pycache__/
+session.json
+build/*
+logs/geckodriver.log
+geckodriver.log
+app.bin
+app.build
+app.dist
+dist/*

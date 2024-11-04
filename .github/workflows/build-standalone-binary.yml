@@ -1,0 +1,44 @@
+name: Build a Standalone Binary
+run-name: ${{ github.actor }} is building a binary
+on:
+  pull_request:
+    branches:
+      - build
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            os_file_name: Hi-Tech.exe
+            os_build_options: --noconsole --onefile --icon=igbot.ico --add-data "src\selenium_stealth\js\*;selenium_stealth\js"
+          - os: macos-13
+            os_file_name: Hi-Tech.app
+            os_build_options: --onedir --icon=igbot.icns --add-data "src/selenium_stealth/js/*:selenium_stealth/js"
+
+    # build for the specific os
+    runs-on: ${{ matrix.os }}
+    steps:
+      # checkout the repo
+      - uses: actions/checkout@v3
+
+      # install python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller ${{ matrix.os_build_options }} --clean --windowed  --distpath dist/${{ matrix.os_file_name }} --name Hi-Tech app.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Hi-Tech
+          path: dist/${{ matrix.os_file_name }}

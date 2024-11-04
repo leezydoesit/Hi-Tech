@@ -1,0 +1,1 @@
+pyinstaller --windowed --onefile --name ProjectTBD --icon icon.ico app.py
